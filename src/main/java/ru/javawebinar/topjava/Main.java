@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava;
 
-import ru.javawebinar.topjava.model.UserMealWithExceed;
-import ru.javawebinar.topjava.util.UserMealsUtil;
+import ru.javawebinar.topjava.model.MealWithExceed;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
