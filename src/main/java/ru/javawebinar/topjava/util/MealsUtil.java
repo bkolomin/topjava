@@ -20,7 +20,9 @@ public class MealsUtil {
             new Meal(1, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
             new Meal(1, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
             new Meal(1, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
-            new Meal(1, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
+            new Meal(1, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510),
+            new Meal(2, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510),
+            new Meal(2, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000)
     );
 
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;

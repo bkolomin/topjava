@@ -25,8 +25,6 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Meal save(int userId, Meal meal) {
         if(MealsUtil.checkNullAndAccess(userId, meal)) {
-            return null;
-        }else {
             if (meal.isNew()) {
                 meal.setId(counter.incrementAndGet());
                 repository.put(meal.getId(), meal);
@@ -34,6 +32,8 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             }
             // treat case: update, but absent in storage
             return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        }else {
+            return null;
         }
     }
 

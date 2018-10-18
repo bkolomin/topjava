@@ -25,13 +25,22 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     public static final List<User> USERS = Arrays.asList(
-            new User(1, "admin", "test@test.com", "123", 0, true, new HashSet<>(Arrays.asList(Role.ROLE_ADMIN)))
+            new User(null, "admin", "admin@test.com", "123", 0, true, new HashSet<>(Arrays.asList(Role.ROLE_ADMIN, Role.ROLE_USER))),
+            new User(null, "admin2", "admin2@test.com", "123", 0, true, new HashSet<>(Arrays.asList(Role.ROLE_ADMIN, Role.ROLE_USER))),
+            new User(null, "user1", "test1@test.com", "123", 0, true, new HashSet<>(Arrays.asList(Role.ROLE_USER)))
     );
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepositoryImpl.class);
 
     {
         USERS.forEach(this::save);
+    }
+
+    @Override
+    public boolean isAdmin(int id){
+        User user = get(id);
+
+        return user.getRoles().contains(Role.ROLE_ADMIN);
     }
 
     @Override

@@ -10,6 +10,8 @@ public interface UserRepository {
     // false if not found
     boolean delete(int id);
 
+    boolean isAdmin(int id);
+
     // null if not found
     User get(int id);
 
