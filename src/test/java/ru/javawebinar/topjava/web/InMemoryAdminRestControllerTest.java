@@ -1,8 +1,12 @@
 package ru.javawebinar.topjava.web;
 
 import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepositoryImpl;
@@ -15,14 +19,22 @@ import java.util.Collection;
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
 
 public class InMemoryAdminRestControllerTest {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
     private static ConfigurableApplicationContext appCtx;
+
     private static AdminRestController controller;
+
+    private static InMemoryUserRepositoryImpl repository;
 
     @BeforeClass
     public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        appCtx = new ClassPathXmlApplicationContext(new String[]{"/spring-app-test.xml", "spring/spring-db.xml"});
         System.out.println("\n" + Arrays.toString(appCtx.getBeanDefinitionNames()) + "\n");
+
         controller = appCtx.getBean(AdminRestController.class);
+        repository = appCtx.getBean(InMemoryUserRepositoryImpl.class);
+        repository.init();
     }
 
     @AfterClass
@@ -33,8 +45,8 @@ public class InMemoryAdminRestControllerTest {
     @Before
     public void setUp() throws Exception {
         // re-initialize
-        InMemoryUserRepositoryImpl repository = appCtx.getBean(InMemoryUserRepositoryImpl.class);
-        repository.init();
+        //InMemoryUserRepositoryImpl repository = appCtx.getBean(InMemoryUserRepositoryImpl.class);
+        //repository.init();
     }
 
     @Test

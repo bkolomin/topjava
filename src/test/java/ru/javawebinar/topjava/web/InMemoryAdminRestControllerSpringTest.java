@@ -17,7 +17,11 @@ import java.util.Collection;
 
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
 
-@ContextConfiguration("classpath:spring/spring-app.xml")
+//@ContextConfiguration("classpath:spring/spring-app.xml")
+@ContextConfiguration({
+        "classpath:spring/spring-db.xml",
+        "/spring-app-test.xml",
+})
 @RunWith(SpringRunner.class)
 public class InMemoryAdminRestControllerSpringTest {
 
