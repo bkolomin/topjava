@@ -3,20 +3,19 @@ package ru.javawebinar.topjava.web;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import ru.javawebinar.topjava.UserTestData;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepositoryImpl;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
-import static ru.javawebinar.topjava.UserTestData.ADMIN;
+
+import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.testUtil.Util.assertMatch;
 
 public class InMemoryAdminRestControllerTest {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -29,7 +28,7 @@ public class InMemoryAdminRestControllerTest {
 
     @BeforeClass
     public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext(new String[]{"/spring-app-test.xml", "spring/spring-db.xml"});
+        appCtx = new ClassPathXmlApplicationContext(new String[]{"/spring-app-test.xml"});
         System.out.println("\n" + Arrays.toString(appCtx.getBeanDefinitionNames()) + "\n");
 
         controller = appCtx.getBean(AdminRestController.class);
@@ -50,15 +49,78 @@ public class InMemoryAdminRestControllerTest {
     }
 
     @Test
-    public void delete() throws Exception {
-        controller.delete(UserTestData.USER_ID);
-        Collection<User> users = controller.getAll();
-        Assert.assertEquals(users.size(), 1);
-        Assert.assertEquals(users.iterator().next(), ADMIN);
+    public void get() throws Exception {
+        User user = controller.get(USER_ID);
+        assertMatch(user, USER, "registered", "roles");
+    }
+
+    @Test
+    public void getByEmail() throws Exception {
+        User user = controller.getByMail("user@yandex.ru");
+        assertMatch(user, USER,"registered", "roles");
     }
 
     @Test(expected = NotFoundException.class)
     public void deleteNotFound() throws Exception {
         controller.delete(10);
     }
+
+    @Test
+    public void getAll() {
+        List<User> all = controller.getAll();
+
+        assertMatch(all, Arrays.asList(new User[]{ADMIN, USER}), "", "");
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void duplicateMailCreate() throws Exception {
+        controller.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void deletedNotFound() throws Exception {
+        controller.delete(999);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getNotFound() throws Exception {
+        controller.get(1);
+    }
+
+    @Test
+    public void update() throws Exception {
+        User updated = new User(USER);
+        updated.setName("UpdatedName");
+        updated.setCaloriesPerDay(330);
+        controller.update(updated, USER_ID);
+        assertMatch(controller.get(USER_ID), updated, "registered", "roles");
+
+        //restore
+        repository.init();
+    }
+
+    @Test
+    public void create() throws Exception {
+        User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
+        User created = controller.create(newUser);
+        newUser.setId(created.getId());
+        assertMatch(controller.getAll(), Arrays.asList(new User[]{ADMIN, newUser, USER}), "registered", "roles");
+
+        // restore
+        repository.init();
+    }
+
+    @Test
+    public void delete() throws Exception {
+        controller.delete(ADMIN_ID);
+        Collection<User> users = controller.getAll();
+        Assert.assertEquals(1, users.size());
+
+        assertMatch(controller.getAll(), Arrays.asList(new User[]{USER}), "registered", "roles");
+
+        // restore
+        repository.init();
+
+    }
+
 }

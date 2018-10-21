@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -30,7 +31,14 @@ public abstract class AbstractUserController {
     public User create(User user) {
         log.info("create {}", user);
         checkNew(user);
-        return service.create(user);
+
+        try {
+            service.getByEmail(user.getEmail());
+        }catch(NotFoundException ex){
+            return service.create(user);
+        }
+
+        throw new NotFoundException("Duplicate email " + user.getEmail());
     }
 
     public void delete(int id) {
