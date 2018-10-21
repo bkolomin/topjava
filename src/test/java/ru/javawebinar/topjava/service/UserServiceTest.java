@@ -2,6 +2,8 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -11,8 +13,10 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepositoryImpl;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +31,7 @@ import static ru.javawebinar.topjava.testUtil.Util.assertMatch;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class UserServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepositoryImpl.class);
 
     static {
         // Only for postgres driver logging
@@ -42,18 +47,23 @@ public class UserServiceTest {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = service.create(newUser);
         newUser.setId(created.getId());
-        assertMatch(service.getAll(), new User[]{ADMIN, newUser, USER}, "registered", "roles");
+        assertMatch(service.getAll(), Arrays.asList(new User[]{ADMIN, newUser, USER}), "registered", "roles");
     }
 
     @Test(expected = DataAccessException.class)
     public void duplicateMailCreate() throws Exception {
-        service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
+        //try {
+            service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
+        /*}catch(Exception ex){
+            log.debug("\n\n!!!! " + ex);
+        }*/
+
     }
 
     @Test
     public void delete() throws Exception {
         service.delete(USER_ID);
-        assertMatch(service.getAll(), ADMIN, "registered", "roles");
+        assertMatch(service.getAll(), Arrays.asList(new User[]{ADMIN}), "registered", "roles");
     }
 
     @Test(expected = NotFoundException.class)
@@ -64,7 +74,7 @@ public class UserServiceTest {
     @Test
     public void get() throws Exception {
         User user = service.get(USER_ID);
-        assertMatch(user, USER);
+        assertMatch(user, USER, "registered", "roles");
     }
 
     @Test(expected = NotFoundException.class)
@@ -75,7 +85,7 @@ public class UserServiceTest {
     @Test
     public void getByEmail() throws Exception {
         User user = service.getByEmail("user@yandex.ru");
-        assertMatch(user, USER);
+        assertMatch(user, USER,"registered", "roles");
     }
 
     @Test
@@ -84,12 +94,12 @@ public class UserServiceTest {
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
         service.update(updated);
-        assertMatch(service.get(USER_ID), updated);
+        assertMatch(service.get(USER_ID), updated, "registered", "roles");
     }
 
     @Test
     public void getAll() throws Exception {
         List<User> all = service.getAll();
-        assertMatch(all, new User[]{ADMIN, USER}, "registered", "roles");
+        assertMatch(all, Arrays.asList(new User[]{ADMIN, USER}), "registered", "roles");
     }
 }

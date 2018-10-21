@@ -9,7 +9,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,10 +41,32 @@ public class MealServiceTest {
 
     @Test
     public void get() {
+        Meal meal = service.get(MEAL4_ID, USER_ID);
+
+        assertMatch(meal, USER_MEAL_1);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getNotFound() {
+        service.get(1, USER_ID);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getWrongUser() {
+        Meal meal = service.get(MEAL4_ID, ADMIN_ID);
     }
 
     @Test
     public void delete() {
+        service.delete(MEAL4_ID, USER_ID); //USER_MEAL_1
+
+        List<Meal> all = service.getAll(USER_ID);
+        assertMatch(all, Arrays.asList(new Meal[]{USER_MEAL_3, USER_MEAL_2}));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void deleteWrongUser() {
+        service.delete(MEAL4_ID, ADMIN_ID);
     }
 
     @Test
@@ -54,15 +79,42 @@ public class MealServiceTest {
 
     @Test
     public void getAll() {
-        List<Meal> all = service.getAll(USER_ID);
-        assertMatch(all, Arrays.asList(new Meal[]{USER_MEAL_3, USER_MEAL_2, USER_MEAL_1}));
+        List<Meal> all = service.getAll(ADMIN_ID);
+        assertMatch(all, Arrays.asList(new Meal[]{ADMIN_MEAL_3, ADMIN_MEAL_2, ADMIN_MEAL_1}));
     }
 
     @Test
     public void update() {
+        Meal updated = new Meal(ADMIN_MEAL_1);
+
+        updated.setDescription("update");
+        updated.setCalories(999);
+        updated.setDateTime(LocalDateTime.of(2017, Month.JANUARY, 1, 1, 1, 1));
+
+        service.update(updated, ADMIN_ID);
+
+        assertMatch(updated, service.get(MEAL1_ID, ADMIN_ID));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void updateWrongUser() {
+        Meal updated = new Meal(ADMIN_MEAL_1);
+
+        updated.setDescription("update");
+        updated.setCalories(999);
+        updated.setDateTime(LocalDateTime.of(2017, Month.JANUARY, 1, 1, 1, 1));
+
+        service.update(updated, USER_ID);
     }
 
     @Test
     public void create() {
+        Meal newMeal = new Meal(ADMIN_MEAL_1);
+
+        newMeal.setId(null); // new
+
+        service.create(newMeal, USER_ID);
+
+        assertMatch(newMeal, service.get(newMeal.getId(), USER_ID));
     }
 }
