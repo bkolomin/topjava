@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.testUtil.Util.assertMatch;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -41,7 +42,7 @@ public class UserServiceTest {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = service.create(newUser);
         newUser.setId(created.getId());
-        assertMatch(service.getAll(), ADMIN, newUser, USER);
+        assertMatch(service.getAll(), new User[]{ADMIN, newUser, USER}, "registered", "roles");
     }
 
     @Test(expected = DataAccessException.class)
@@ -52,7 +53,7 @@ public class UserServiceTest {
     @Test
     public void delete() throws Exception {
         service.delete(USER_ID);
-        assertMatch(service.getAll(), ADMIN);
+        assertMatch(service.getAll(), ADMIN, "registered", "roles");
     }
 
     @Test(expected = NotFoundException.class)
@@ -89,6 +90,6 @@ public class UserServiceTest {
     @Test
     public void getAll() throws Exception {
         List<User> all = service.getAll();
-        assertMatch(all, ADMIN, USER);
+        assertMatch(all, new User[]{ADMIN, USER}, "registered", "roles");
     }
 }
