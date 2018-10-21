@@ -69,7 +69,7 @@ public class InMemoryAdminRestControllerTest {
     public void getAll() {
         List<User> all = controller.getAll();
 
-        assertMatch(all, Arrays.asList(new User[]{ADMIN, USER}), "", "");
+        assertMatch(all, new User[]{ADMIN, USER}, "", "");
     }
 
     @Test(expected = NotFoundException.class)
@@ -104,7 +104,7 @@ public class InMemoryAdminRestControllerTest {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = controller.create(newUser);
         newUser.setId(created.getId());
-        assertMatch(controller.getAll(), Arrays.asList(new User[]{ADMIN, newUser, USER}), "registered", "roles");
+        assertMatch(controller.getAll(), new User[]{ADMIN, newUser, USER}, "registered", "roles");
 
         // restore
         repository.init();
@@ -116,7 +116,7 @@ public class InMemoryAdminRestControllerTest {
         Collection<User> users = controller.getAll();
         Assert.assertEquals(1, users.size());
 
-        assertMatch(controller.getAll(), Arrays.asList(new User[]{USER}), "registered", "roles");
+        assertMatch(controller.getAll(), new User[]{USER}, "registered", "roles");
 
         // restore
         repository.init();

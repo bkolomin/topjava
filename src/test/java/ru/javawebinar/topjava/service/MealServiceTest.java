@@ -53,7 +53,7 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void getWrongUser() {
-        Meal meal = service.get(MEAL4_ID, ADMIN_ID);
+       service.get(MEAL4_ID, ADMIN_ID);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class MealServiceTest {
         service.delete(MEAL4_ID, USER_ID); //USER_MEAL_1
 
         List<Meal> all = service.getAll(USER_ID);
-        assertMatch(all, Arrays.asList(new Meal[]{USER_MEAL_3, USER_MEAL_2}));
+        assertMatch(all, new Meal[]{USER_MEAL_3, USER_MEAL_2});
     }
 
     @Test(expected = NotFoundException.class)
@@ -80,7 +80,7 @@ public class MealServiceTest {
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(ADMIN_ID);
-        assertMatch(all, Arrays.asList(new Meal[]{ADMIN_MEAL_3, ADMIN_MEAL_2, ADMIN_MEAL_1}));
+        assertMatch(all, new Meal[]{ADMIN_MEAL_3, ADMIN_MEAL_2, ADMIN_MEAL_1});
     }
 
     @Test

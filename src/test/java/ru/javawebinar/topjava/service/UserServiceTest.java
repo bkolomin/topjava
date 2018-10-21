@@ -47,7 +47,7 @@ public class UserServiceTest {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = service.create(newUser);
         newUser.setId(created.getId());
-        assertMatch(service.getAll(), Arrays.asList(new User[]{ADMIN, newUser, USER}), "registered", "roles");
+        assertMatch(service.getAll(), new User[]{ADMIN, newUser, USER}, "registered", "roles");
     }
 
     @Test(expected = DataAccessException.class)
@@ -58,7 +58,7 @@ public class UserServiceTest {
     @Test
     public void delete() throws Exception {
         service.delete(USER_ID);
-        assertMatch(service.getAll(), Arrays.asList(new User[]{ADMIN}), "registered", "roles");
+        assertMatch(service.getAll(), new User[]{ADMIN}, "registered", "roles");
     }
 
     @Test(expected = NotFoundException.class)
@@ -95,6 +95,6 @@ public class UserServiceTest {
     @Test
     public void getAll() throws Exception {
         List<User> all = service.getAll();
-        assertMatch(all, Arrays.asList(new User[]{ADMIN, USER}), "registered", "roles");
+        assertMatch(all, new User[]{ADMIN, USER}, "registered", "roles");
     }
 }
