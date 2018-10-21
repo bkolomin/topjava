@@ -12,7 +12,6 @@ import ru.javawebinar.topjava.web.user.ProfileRestController;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
 import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
