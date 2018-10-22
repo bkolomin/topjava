@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
@@ -60,7 +61,7 @@ public class MealServiceTest {
         service.delete(MEAL4_ID, USER_ID); //USER_MEAL_1
 
         List<Meal> all = service.getAll(USER_ID);
-        assertMatch(all, new Meal[]{USER_MEAL_3, USER_MEAL_2});
+        assertMatch(all, USER_MEAL_3, USER_MEAL_2);
     }
 
     @Test(expected = NotFoundException.class)
@@ -70,16 +71,31 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenDates() {
+
+        List<Meal> list = service.getBetweenDates(
+                LocalDate.of(2018, Month.JANUARY, 1),
+                LocalDate.of(2018, Month.JANUARY, 2),
+                ADMIN_ID);
+
+        assertMatch(list, ADMIN_MEAL_2, ADMIN_MEAL_1);
     }
 
     @Test
     public void getBetweenDateTimes() {
+
+        List<Meal> list = service.getBetweenDateTimes(
+                LocalDateTime.of(2018, Month.JANUARY, 5, 13, 00, 0),
+                LocalDateTime.of(2018, Month.JANUARY, 6, 18, 01, 0),
+                USER_ID);
+
+        assertMatch(list, new Meal[]{USER_MEAL_3});
+
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(ADMIN_ID);
-        assertMatch(all, new Meal[]{ADMIN_MEAL_3, ADMIN_MEAL_2, ADMIN_MEAL_1});
+        assertMatch(all, ADMIN_MEAL_3, ADMIN_MEAL_2, ADMIN_MEAL_1);
     }
 
     @Test
@@ -112,8 +128,11 @@ public class MealServiceTest {
 
         newMeal.setId(null); // new
 
-        service.create(newMeal, USER_ID);
+        Meal newCreatedMeal = service.create(newMeal, USER_ID);
+
+        assertMatch(newMeal, newCreatedMeal);
 
         assertMatch(newMeal, service.get(newMeal.getId(), USER_ID));
     }
+
 }

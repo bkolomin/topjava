@@ -32,13 +32,7 @@ public abstract class AbstractUserController {
         log.info("create {}", user);
         checkNew(user);
 
-        try {
-            service.getByEmail(user.getEmail());
-        }catch(NotFoundException ex){
-            return service.create(user);
-        }
-
-        throw new NotFoundException("Duplicate email " + user.getEmail());
+        return service.create(user);
     }
 
     public void delete(int id) {

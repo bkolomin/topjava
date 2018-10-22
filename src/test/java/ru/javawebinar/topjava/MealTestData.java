@@ -16,11 +16,11 @@ public class MealTestData {
     public static final int MEAL6_ID = START_SEQ + 7;
 
     public static final Meal ADMIN_MEAL_1 = new Meal(MEAL1_ID, LocalDateTime.of(2018,Month.JANUARY, 1, 9, 0, 10), "Админ завтрак",500);
-    public static final Meal ADMIN_MEAL_2 = new Meal(MEAL2_ID, LocalDateTime.of(2018,Month.JANUARY, 1, 12, 0, 20), "Админ обед",1000);
-    public static final Meal ADMIN_MEAL_3 = new Meal(MEAL3_ID, LocalDateTime.of(2018,Month.JANUARY, 1, 18, 0, 30), "Админ ужин",1500);
-    public static final Meal USER_MEAL_1 = new Meal(MEAL4_ID, LocalDateTime.of(2018,Month.JANUARY, 1, 9, 0, 40), "Юзер ланч",501);
-    public static final Meal USER_MEAL_2 = new Meal(MEAL5_ID, LocalDateTime.of(2018,Month.JANUARY, 1, 12, 0, 50), "Юзер обед",1001);
-    public static final Meal USER_MEAL_3 = new Meal(MEAL6_ID, LocalDateTime.of(2018,Month.JANUARY, 1, 18, 1, 00), "Юзер ужин",1501);
+    public static final Meal ADMIN_MEAL_2 = new Meal(MEAL2_ID, LocalDateTime.of(2018,Month.JANUARY, 2, 12, 0, 20), "Админ обед",1000);
+    public static final Meal ADMIN_MEAL_3 = new Meal(MEAL3_ID, LocalDateTime.of(2018,Month.JANUARY, 3, 18, 0, 30), "Админ ужин",1500);
+    public static final Meal USER_MEAL_1 = new Meal(MEAL4_ID, LocalDateTime.of(2018,Month.JANUARY,  4, 9, 0, 40), "Юзер ланч",501);
+    public static final Meal USER_MEAL_2 = new Meal(MEAL5_ID, LocalDateTime.of(2018,Month.JANUARY,  5, 12, 0, 50), "Юзер обед",1001);
+    public static final Meal USER_MEAL_3 = new Meal(MEAL6_ID, LocalDateTime.of(2018,Month.JANUARY,  6, 18, 1, 00), "Юзер ужин",1501);
 
 }
 

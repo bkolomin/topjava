@@ -16,6 +16,7 @@ import java.util.*;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.testUtil.Util.assertMatch;
+import static ru.javawebinar.topjava.testUtil.Util.assertMatchUser;
 
 public class InMemoryAdminRestControllerTest {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -51,13 +52,13 @@ public class InMemoryAdminRestControllerTest {
     @Test
     public void get() throws Exception {
         User user = controller.get(USER_ID);
-        assertMatch(user, USER, "registered", "roles");
+        assertMatchUser(user, USER);
     }
 
     @Test
     public void getByEmail() throws Exception {
         User user = controller.getByMail("user@yandex.ru");
-        assertMatch(user, USER,"registered", "roles");
+        assertMatchUser(user, USER);
     }
 
     @Test(expected = NotFoundException.class)
@@ -69,7 +70,7 @@ public class InMemoryAdminRestControllerTest {
     public void getAll() {
         List<User> all = controller.getAll();
 
-        assertMatch(all, new User[]{ADMIN, USER}, "", "");
+        assertMatchUser(all, ADMIN, USER);
     }
 
     @Test(expected = NotFoundException.class)
@@ -93,7 +94,7 @@ public class InMemoryAdminRestControllerTest {
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
         controller.update(updated, USER_ID);
-        assertMatch(controller.get(USER_ID), updated, "registered", "roles");
+        assertMatchUser(controller.get(USER_ID), updated);
 
         //restore
         repository.init();
@@ -104,7 +105,7 @@ public class InMemoryAdminRestControllerTest {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = controller.create(newUser);
         newUser.setId(created.getId());
-        assertMatch(controller.getAll(), new User[]{ADMIN, newUser, USER}, "registered", "roles");
+        assertMatchUser(controller.getAll(), ADMIN, newUser, USER);
 
         // restore
         repository.init();
@@ -116,7 +117,7 @@ public class InMemoryAdminRestControllerTest {
         Collection<User> users = controller.getAll();
         Assert.assertEquals(1, users.size());
 
-        assertMatch(controller.getAll(), new User[]{USER}, "registered", "roles");
+        assertMatchUser(controller.getAll(), new User[]{USER});
 
         // restore
         repository.init();

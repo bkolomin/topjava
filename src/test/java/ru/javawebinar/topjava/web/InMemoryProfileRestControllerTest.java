@@ -16,6 +16,7 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN;
 import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.testUtil.Util.assertMatch;
+import static ru.javawebinar.topjava.testUtil.Util.assertMatchUser;
 
 @ContextConfiguration("/spring-app-test.xml")
 @RunWith(SpringRunner.class)
@@ -36,13 +37,13 @@ public class InMemoryProfileRestControllerTest {
     public void get() {
         User user = controller.get(USER_ID);
 
-        assertMatch(user, USER, "registered", "roles");
+        assertMatchUser(user, USER);
     }
 
     @Test
     public void delete() {
         controller.delete(USER_ID);
-        assertMatch(controller.getAll(), Arrays.asList(new User[]{ADMIN}), "registered", "roles");
+        assertMatchUser(controller.getAll(), Arrays.asList(new User[]{ADMIN}));
     }
 
     @Test
@@ -51,6 +52,6 @@ public class InMemoryProfileRestControllerTest {
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
         controller.update(updated);
-        assertMatch(controller.get(USER_ID), updated, "registered", "roles");
+        assertMatchUser(controller.get(USER_ID), updated);
     }
 }

@@ -4,6 +4,7 @@ target
 *.iml
 log
 classes
+src/resources/db/postgres.properties
 
 
 

@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import static ru.javawebinar.topjava.UserTestData.*;
-import static ru.javawebinar.topjava.testUtil.Util.assertMatch;
+import static ru.javawebinar.topjava.testUtil.Util.assertMatchUser;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -47,7 +47,7 @@ public class UserServiceTest {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = service.create(newUser);
         newUser.setId(created.getId());
-        assertMatch(service.getAll(), new User[]{ADMIN, newUser, USER}, "registered", "roles");
+        assertMatchUser(service.getAll(), ADMIN, newUser, USER);
     }
 
     @Test(expected = DataAccessException.class)
@@ -58,7 +58,7 @@ public class UserServiceTest {
     @Test
     public void delete() throws Exception {
         service.delete(USER_ID);
-        assertMatch(service.getAll(), new User[]{ADMIN}, "registered", "roles");
+        assertMatchUser(service.getAll(), ADMIN);
     }
 
     @Test(expected = NotFoundException.class)
@@ -69,7 +69,7 @@ public class UserServiceTest {
     @Test
     public void get() throws Exception {
         User user = service.get(USER_ID);
-        assertMatch(user, USER, "registered", "roles");
+        assertMatchUser(user, USER);
     }
 
     @Test(expected = NotFoundException.class)
@@ -80,7 +80,7 @@ public class UserServiceTest {
     @Test
     public void getByEmail() throws Exception {
         User user = service.getByEmail("user@yandex.ru");
-        assertMatch(user, USER,"registered", "roles");
+        assertMatchUser(user, USER);
     }
 
     @Test
@@ -89,12 +89,12 @@ public class UserServiceTest {
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
         service.update(updated);
-        assertMatch(service.get(USER_ID), updated, "registered", "roles");
+        assertMatchUser(service.get(USER_ID), updated);
     }
 
     @Test
     public void getAll() throws Exception {
         List<User> all = service.getAll();
-        assertMatch(all, new User[]{ADMIN, USER}, "registered", "roles");
+        assertMatchUser(all, ADMIN, USER);
     }
 }
